@@ -30,12 +30,23 @@ import com.serotonin.modbus4j.ModbusMaster;
 import com.serotonin.modbus4j.ModbusSlaveSet;
 import com.serotonin.modbus4j.ip.tcp.TcpSlave;
 import com.serotonin.modbus4j.ip.udp.UdpSlave;
+import com.serotonin.modbus4j.sero.messaging.IncomingResponseMessage;
+import com.serotonin.modbus4j.sero.messaging.UnexpectedResponseHandler;
+import com.serotonin.modbus4j.sero.messaging.WaitingRoom;
 
 public class ModbusLink {
 	static private final Logger LOGGER;
-
+	
 	static {
 		LOGGER = LoggerFactory.getLogger(ModbusLink.class);
+		
+		
+		WaitingRoom.setUnexpectedResponseHandler(new UnexpectedResponseHandler() {
+			@Override
+			public void handle(IncomingResponseMessage response) {
+				Util.recordUnexpectedResponse(response);
+			}
+		});
 	}
 
 	static final String ACTION_ADD_LOCAL_SLAVE = "setup local slave";

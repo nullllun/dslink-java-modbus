@@ -1,5 +1,11 @@
 package modbus;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
@@ -9,6 +15,8 @@ import org.dsa.iot.dslink.util.json.JsonArray;
 
 import com.serotonin.modbus4j.locator.NumericLocator;
 import com.serotonin.modbus4j.locator.StringLocator;
+import com.serotonin.modbus4j.msg.ModbusResponse;
+import com.serotonin.modbus4j.sero.messaging.IncomingResponseMessage;
 
 import jssc.SerialNativeInterface;
 import jssc.SerialPortList;
@@ -162,5 +170,38 @@ public class Util {
 			}
 		}
 		return ret;
+	}
+	
+	
+	public static void recordUnexpectedResponse(IncomingResponseMessage response) {
+		BufferedWriter unexpectedResponseWriter = null;
+		try {
+			unexpectedResponseWriter = new BufferedWriter(new FileWriter("unexpectedResponses.txt", true));
+			unexpectedResponseWriter.write(Instant.now().toString());
+			unexpectedResponseWriter.write(": ");
+			unexpectedResponseWriter.write(responseToString(response));
+			unexpectedResponseWriter.newLine();
+			unexpectedResponseWriter.flush();
+		} catch (IOException e) {
+		} finally {
+			if (unexpectedResponseWriter != null) {
+				try {
+					unexpectedResponseWriter.close();
+				} catch (IOException e) {
+				}
+			}
+		}
+	}
+	
+	public static String responseToString(IncomingResponseMessage response) {
+		try {
+			Method method = response.getClass().getMethod("getModbusResponse");
+			if (method != null) {
+				ModbusResponse modbusResponse = (ModbusResponse) method.invoke(response);
+				return modbusResponse.toString();
+			}
+		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+		}
+		return "";
 	}
 }

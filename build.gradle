@@ -9,19 +9,22 @@ version = '0.2.9-SNAPSHOT'
 
 repositories {
     mavenCentral()
-    maven {
-    	url 'https://maven.mangoautomation.net/repository/ias-release/'
-    }
+    //maven {
+    //	url 'https://maven.mangoautomation.net/repository/ias-release/'
+    //}
     maven {
         url 'https://oss.sonatype.org/content/repositories/snapshots/'
     }
+    flatDir { dirs 'external' }
 }
 
 
 dependencies {
     compile 'org.iot-dsa:dslink:0.17.2-SNAPSHOT'
-    compile 'com.infiniteautomation:modbus4j:3.0.3'
+    compile 'com.infiniteautomation:modbus4j:3+'
     compile 'org.scream3r:jssc:2.8.0'
+    compile 'org.apache.commons:commons-lang3:3.0'
+    compile 'commons-logging:commons-logging:1.1.1'
 }
 
 
