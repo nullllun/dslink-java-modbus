@@ -3,8 +3,6 @@ package modbus;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.regex.Pattern;
@@ -15,7 +13,6 @@ import org.dsa.iot.dslink.util.json.JsonArray;
 
 import com.serotonin.modbus4j.locator.NumericLocator;
 import com.serotonin.modbus4j.locator.StringLocator;
-import com.serotonin.modbus4j.msg.ModbusResponse;
 import com.serotonin.modbus4j.sero.messaging.IncomingResponseMessage;
 
 import jssc.SerialNativeInterface;
@@ -194,14 +191,6 @@ public class Util {
 	}
 	
 	public static String responseToString(IncomingResponseMessage response) {
-		try {
-			Method method = response.getClass().getMethod("getModbusResponse");
-			if (method != null) {
-				ModbusResponse modbusResponse = (ModbusResponse) method.invoke(response);
-				return modbusResponse.toString();
-			}
-		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-		}
-		return "";
+		return response.toString();
 	}
 }

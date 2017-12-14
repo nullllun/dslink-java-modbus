@@ -44,7 +44,7 @@ public class ModbusLink {
 		WaitingRoom.setUnexpectedResponseHandler(new UnexpectedResponseHandler() {
 			@Override
 			public void handle(IncomingResponseMessage response) {
-				Util.recordUnexpectedResponse(response);
+				LOGGER.warn("Unexpected Response: " + response.toString());
 			}
 		});
 	}
